@@ -1,7 +1,7 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { Transform, Type } from "class-transformer";
 import { IsDate, IsMongoId, IsNotEmpty, IsOptional, IsString, ValidateNested } from "class-validator";
-import { CreateCategoriaDto } from "src/categoria/dto/categoria.dto";
+import { CreateCategoriaDto } from "src/modules/categoria/dto/categoria.dto";
 
 export class CreateEventoDto {
 

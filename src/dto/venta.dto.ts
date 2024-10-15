@@ -2,7 +2,7 @@ import { Type } from "class-transformer";
 import { IsNotEmpty, ValidateNested } from "class-validator";
 import { CreateClienteDto } from "src/dto/cliente.dto";
 import { CreateEventoDto } from "src/dto/evento.dto";
-import { ReferenciarUsuarioDto } from "src/usuario/dto/usuario.dto";
+import { ReferenciarUsuarioDto } from "src/modules/usuario/dto/usuario.dto";
 import { PartialType } from '@nestjs/mapped-types';
 
 
