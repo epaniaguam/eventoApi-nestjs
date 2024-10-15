@@ -25,11 +25,6 @@ export class CreateEventoDto {
   @Type(() => CreateCategoriaDto)
   @IsNotEmpty()
   categoria: CreateCategoriaDto;
-  
-  // @IsString()
-  // @IsNotEmpty()
-  // categoria: string;
-
 }
 
 export class UpdateEventoDto extends PartialType(CreateEventoDto) {}

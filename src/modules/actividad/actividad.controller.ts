@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ActividadService } from './actividad.service';
 import { Public } from '../auth/decorators/public.decorator';
+import { RegistrarVentaDto } from 'src/dto/venta.dto';
 
 
 @Controller('actividad')
@@ -9,8 +10,8 @@ export class ActividadController {
 
   @Post()
   @Public()
-  create(@Body() createActividadDto: any) {
-    return this.actividadService.create(createActividadDto);
+  create(@Body() ventaDto: RegistrarVentaDto) {
+    return this.actividadService.create(ventaDto);
   }
 
   @Get()

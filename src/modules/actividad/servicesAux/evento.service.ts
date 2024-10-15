@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -9,6 +8,7 @@ import { ObjectId } from 'mongodb';
 import { EventoEntity } from 'src/entities/evento.entity';
 import { Repository } from 'typeorm';
 import { stringToObjectid } from 'src/utils/convert.objetid.util';
+import { CreateEventoDto } from 'src/dto/evento.dto';
 
 @Injectable()
 export class EventoService {
@@ -27,14 +27,14 @@ export class EventoService {
     return this.eventoRepository.findOneBy({ _id: objectId });
   }
 
-  async createEvento(evento: EventoEntity): Promise<EventoEntity> {
+  async createEvento(evento: CreateEventoDto): Promise<EventoEntity> {
     const existeEvento = await this.eventoRepository.findOneBy({
       nombreEvento: evento.nombreEvento,
     });
     if (existeEvento) {
-      throw new HttpException('Evento ya existe', HttpStatus.CONFLICT);
+      return existeEvento;
     }
-
+    
     const newEvento = this.eventoRepository.create(evento);
     return await this.eventoRepository.save(newEvento);
   }

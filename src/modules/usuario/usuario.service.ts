@@ -30,7 +30,7 @@ export class UsuarioService {
     return await this.usuarioRepository.find();
   }
 
-  async findOne(usrnm: string) {
+  async findOneByUsername(usrnm: string) {
     const usuario = await this.usuarioRepository.findOne({ where: { username: usrnm } });
     if (!usuario) {
       throw new HttpException({ message: 'Usuario no encontrado' }, HttpStatus.NOT_FOUND);

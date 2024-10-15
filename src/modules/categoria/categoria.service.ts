@@ -17,7 +17,7 @@ export class CategoriaService {
   async create(createCategoriaDto: CreateCategoriaDto):Promise<CategoriaEntity> {
     const existe = await this.categoriaRepository.findOne({ where: { nombreCategoria: createCategoriaDto.nombreCategoria } });
     if (existe) {
-      throw new HttpException({ message: 'La categoria ya existe' }, HttpStatus.CONFLICT);
+      return existe;
     }
 
     const datainto = this.categoriaRepository.create(createCategoriaDto);

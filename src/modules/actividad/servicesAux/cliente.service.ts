@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ObjectId } from 'mongodb';
 import { ClienteEntity } from 'src/entities/cliente.entity';
 import { Repository } from 'typeorm';
+import { stringToObjectid } from 'src/utils/convert.objetid.util';
+import { CreateClienteDto } from 'src/dto/cliente.dto';
 
 @Injectable()
 export class ClienteService {
@@ -11,32 +13,26 @@ export class ClienteService {
     private clienteRepository: Repository<ClienteEntity>,
   ) {}
 
-  private async convertirObjectId(id: string): Promise<ObjectId>{
-    // Verificar si el ID es un ObjectId válido
-    if (!ObjectId.isValid(id)) {
-      throw new BadRequestException('ID inválido');
-    }
-    // Convertir el string a ObjectId
-    const objectId = new ObjectId(id);
-    return objectId;
-  }
 
   async getClientes(): Promise<ClienteEntity[]> {
     return this.clienteRepository.find();
   }
 
-  //
-  async getCliente(id: string): Promise<ClienteEntity> {
-    const objectId = await this.convertirObjectId(id);
+  async getCliente(id: string):  Promise<ClienteEntity> {
+    const objectId = await stringToObjectid(id);
     return this.clienteRepository.findOneBy({ _id: objectId });
   }
 
-  async createCliente(cliente: ClienteEntity): Promise<ClienteEntity> {
+  async getClientByName(nombre: string): Promise<ClienteEntity> {
+    return this.clienteRepository.findOneBy({ nombre });
+  }
+
+  async createCliente(cliente: CreateClienteDto): Promise<ClienteEntity> {
     const existeCliente = await this.clienteRepository.findOneBy({
       nombre: cliente.nombre,
     });
     if (existeCliente) {
-      throw new HttpException('Cliente ya existe', HttpStatus.CONFLICT);
+      return existeCliente;
     }
 
     const newcliente = await this.clienteRepository.create(cliente);
