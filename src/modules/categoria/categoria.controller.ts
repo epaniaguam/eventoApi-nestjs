@@ -16,18 +16,19 @@ export class CategoriaController {
     return this.categoriaService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriaService.findOne(+id);
+  @Get(':nombre')
+  findOne(@Param('nombre') nombre: string) {
+    return this.categoriaService.findOne(nombre);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCategoriaDto: UpdateCategoriaDto) {
-    return this.categoriaService.update(+id, updateCategoriaDto);
+
+  @Patch(':nombre')
+  update(@Param('nombre') nombre: string, @Body() updateCategoriaDto: UpdateCategoriaDto) {
+    return this.categoriaService.update(nombre, updateCategoriaDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoriaService.remove(+id);
+  @Delete(':nombre')
+  remove(@Param('nombre') nombre: string) {
+    return this.categoriaService.remove(nombre);
   }
 }

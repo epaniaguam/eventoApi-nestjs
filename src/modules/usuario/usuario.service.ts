@@ -1,8 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUsuarioDto, UpdateUsuarioDto } from './dto/usuario.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsuarioEntity } from './entities/usuario.entity';
 import { Repository } from 'typeorm';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UsuarioService {
@@ -37,6 +38,15 @@ export class UsuarioService {
     return usuario;
   }
 
+  async findById(id: string) {
+    const objectId = await this.convertirObjectId(id);
+    const usuario = await this.usuarioRepository.findOne({ where: { _id: objectId } });
+    if (!usuario) {
+      throw new HttpException({ message: 'Usuario no encontrado' }, HttpStatus.NOT_FOUND);
+    }
+    return usuario;
+  }
+
   async update(usrnm: string, updateUsuarioDto: UpdateUsuarioDto) {
     const usuario = await this.usuarioRepository.findOne({ where: { username: usrnm } });
     if (!usuario) {
@@ -64,4 +74,15 @@ export class UsuarioService {
     }
     return await this.usuarioRepository.delete({ username: usrnm });
   }
+
+  private async convertirObjectId(id: string): Promise<ObjectId>{
+    // Verificar si el ID es un ObjectId válido
+    if (!ObjectId.isValid(id)) {
+      throw new BadRequestException('ID inválido');
+    }
+    // Convertir el string a ObjectId
+    const objectId = new ObjectId(id);
+    return objectId;
+  }
+
 }

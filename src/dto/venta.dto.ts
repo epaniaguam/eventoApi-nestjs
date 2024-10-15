@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsNotEmpty, ValidateNested } from "class-validator";
+import { IsNotEmpty, IsNumber, IsPositive, ValidateNested } from "class-validator";
 import { CreateClienteDto } from "src/dto/cliente.dto";
 import { CreateEventoDto } from "src/dto/evento.dto";
 import { ReferenciarUsuarioDto } from "src/modules/usuario/dto/usuario.dto";
@@ -21,6 +21,11 @@ export class RegistrarVentaDto {
   @Type(() => CreateEventoDto)
   @IsNotEmpty()
   evento: CreateEventoDto;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  precio: number;
 }
 
 export class UpdateVentaDto extends PartialType(RegistrarVentaDto) {}

@@ -14,4 +14,7 @@ export class VentasEntity {
 
   @Column()
   eventoId: ObjectId;
+
+  @Column({ type: 'number' })
+  precio: number;
 }
