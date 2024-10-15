@@ -20,4 +20,5 @@ export class EventoEntity {
 
   @Column()
   categoriaId: ObjectId;
+
 }

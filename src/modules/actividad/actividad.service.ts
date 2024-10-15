@@ -191,6 +191,7 @@ export class ActividadService {
     const usuario = await this.usuarioService.findById(venta.usuarioId.toString());
     const categoria = await this.categoriaService.findById(evento.categoriaId.toString());
 
+    // console.log('evento', evento);
 
     const usuarioData = {
       _id: usuario._id,
@@ -214,6 +215,7 @@ export class ActividadService {
         _id: categoria._id,
         nombreCategoria: categoria.nombreCategoria,
       },
+      precio: venta.precio ?? 0,
     };
 
     return {

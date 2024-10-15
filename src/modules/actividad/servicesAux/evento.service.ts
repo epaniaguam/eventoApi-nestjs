@@ -67,22 +67,6 @@ export class EventoService {
     return await this.eventoRepository.save(eventoActualizado);
   }
 
-
-  // async updateEvento(
-  //   nombre: string,
-  //   existeEvento: EventoEntity,
-  // ): Promise<EventoEntity> {
-  //   const existeEvento = await this.eventoRepository.findOneBy({
-  //     nombreEvento: nombre,
-  //   });
-  //   if (!existeEvento) {
-  //     throw new HttpException('Evento no encontrado', HttpStatus.NOT_FOUND);
-  //   }
-
-  //   // await this.eventoRepository.update({ nombreEvento }, evento);
-  //   return existeEvento;
-  // }
-
   async remove(evento: EventoEntity): Promise<EventoEntity> {
     return await this.eventoRepository.remove(evento);
   }
