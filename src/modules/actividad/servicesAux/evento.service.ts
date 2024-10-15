@@ -28,8 +28,9 @@ export class EventoService {
   }
 
   async getEventoByNombre(nombre: string): Promise<EventoEntity> {
+    console.log('nombre', nombre);
     const evento = this.eventoRepository.findOneBy({ nombreEvento: nombre });
-    if (evento) {
+    if (!evento) {
       throw new HttpException('Evento no encontrado', HttpStatus.NOT_FOUND);
     }
     return evento;

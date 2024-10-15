@@ -58,7 +58,7 @@ export class UsuarioService {
     if (usuarioIgual) {
       const existe = await this.usuarioRepository.findOne({ where: { username: usuarioIgual } });
       if (existe) {
-        throw new HttpException({ message: 'Otro usuario con ese nombre de usuario ya existe' }, HttpStatus.CONFLICT);
+        throw new HttpException({ message: `Otro usuario con ${updateUsuarioDto.username} ya existe` }, HttpStatus.CONFLICT);
       }
     }
 

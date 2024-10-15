@@ -64,7 +64,7 @@ export class CategoriaService {
     if (!result) {
       throw new HttpException({ message: 'Categoria no encontrada' }, HttpStatus.NOT_FOUND);
     }
-    await this.categoriaRepository.delete({ nombreCategoria: nombre });
+    return await this.categoriaRepository.delete({ nombreCategoria: nombre });
   }
 
 }
