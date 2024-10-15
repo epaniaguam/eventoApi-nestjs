@@ -47,23 +47,15 @@ export class CategoriaService {
     return categoria;
   }
 
-  async update(nombre: string, updateCategoriaDto: UpdateCategoriaDto) {
+  async update(nombre: string, updateCategoriaDto: UpdateCategoriaDto): Promise<CategoriaEntity> {
 
     const categoria = await this.categoriaRepository.findOne({ where: { nombreCategoria: nombre } });
     if (!categoria) {
       throw new HttpException({ message: 'Categoria no encontrada' }, HttpStatus.NOT_FOUND);
     }
 
-    const categoriaIgual = updateCategoriaDto.nombreCategoria;
-
-    if (categoriaIgual) {
-      const existe = await this.categoriaRepository.findOne({ where: { nombreCategoria: categoriaIgual } });
-      if (existe) {
-        throw new HttpException({ message: 'Otra categoria con ese nombre ya existe' }, HttpStatus.CONFLICT);
-      }
-    }
-
     const categoriaActualizada = Object.assign(categoria, updateCategoriaDto);
+
     return await this.categoriaRepository.save(categoriaActualizada);
   }
 

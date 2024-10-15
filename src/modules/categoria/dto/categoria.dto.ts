@@ -1,9 +1,17 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsNotEmpty, IsString, Length } from "class-validator";
-export class CreateCategoriaDto {
+import { IsNotEmpty, IsOptional, IsString, Length } from "class-validator";
+
+export class BaseCategoriaDto {
+  @IsOptional()
+  @IsString()
+  nombreCategoria?: string;
+}
+export class CreateCategoriaDto extends BaseCategoriaDto {
   @IsString()
   @IsNotEmpty()
-  @Length(3, 50)
   nombreCategoria: string;
 }
-export class UpdateCategoriaDto extends PartialType(CreateCategoriaDto) {}
+
+export class UpdateCategoriaDto extends BaseCategoriaDto {
+  // Todas las propiedades son opcionales
+}

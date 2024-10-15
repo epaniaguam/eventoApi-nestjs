@@ -24,7 +24,12 @@ export class ClienteService {
   }
 
   async getClientByName(nombre: string): Promise<ClienteEntity> {
-    return this.clienteRepository.findOneBy({ nombre });
+    console.log('nombre', nombre);
+    const cliente = this.clienteRepository.findOneBy({ nombre: nombre });
+    if (!cliente) {
+      throw new HttpException('Cliente no encontrado', HttpStatus.NOT_FOUND);
+    }
+    return cliente;
   }
 
   async createCliente(cliente: CreateClienteDto): Promise<ClienteEntity> {

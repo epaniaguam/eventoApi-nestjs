@@ -1,19 +1,43 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { Transform, Type } from "class-transformer";
 import { IsDate, IsMongoId, IsNotEmpty, IsOptional, IsString, ValidateNested } from "class-validator";
-import { CreateCategoriaDto } from "src/modules/categoria/dto/categoria.dto";
+import { BaseCategoriaDto, CreateCategoriaDto, UpdateCategoriaDto } from "src/modules/categoria/dto/categoria.dto";
 
-export class CreateEventoDto {
+export class BaseEventoDto {
+  @IsOptional()
+  @IsString()
+  nombreEvento?: string;
 
+  @IsOptional()
+  @IsString()
+  descripcion?: string;
+
+  @IsOptional()
+  @Transform(({ value }) => (value ? new Date(value) : undefined))
+  @IsDate()
+  fecha?: Date;
+
+  @IsOptional()
+  @IsString()
+  lugar?: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => BaseCategoriaDto)
+  categoria?: BaseCategoriaDto;
+}
+
+export class CreateEventoDto extends BaseEventoDto {
   @IsString()
   @IsNotEmpty()
   nombreEvento: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   descripcion: string;
-  
-  @Transform(({ value }) => new Date(value))  // Transforma el string en una instancia de Date
+
+  @IsNotEmpty()
+  @Transform(({ value }) => new Date(value))
   @IsDate()
   fecha: Date;
 
@@ -27,4 +51,6 @@ export class CreateEventoDto {
   categoria: CreateCategoriaDto;
 }
 
-export class UpdateEventoDto extends PartialType(CreateEventoDto) {}
+export class UpdateEventoDto extends BaseEventoDto {
+  // Todas las propiedades son opcionales
+}
