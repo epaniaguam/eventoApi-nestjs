@@ -10,7 +10,7 @@ import { UsuarioService } from 'src/modules/usuario/usuario.service';
 
 @Module({
   imports: [
-    // UsuarioModule,
+    UsuarioModule,
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
