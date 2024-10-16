@@ -10,7 +10,7 @@ export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
   @Post()
-  @Public()
+  // @Public()
   @ApiOperation({ summary: 'Crear un nuevo usuario' })
   @ApiResponse({ status: 201, description: 'Usuario creado con éxito.' })
   @ApiResponse({ status: 409, description: 'El usuario ya existe.' })
@@ -20,7 +20,7 @@ export class UsuarioController {
   }
 
   @Get()
-  @Public()
+  // @Public()
   @ApiOperation({ summary: 'Obtener todos los usuarios' })
   @ApiResponse({ status: 200, description: 'Lista de todos los usuarios recuperada con éxito.' })
   findAll() {
@@ -28,7 +28,7 @@ export class UsuarioController {
   }
 
   @Get(':username')
-  @Public()
+  // @Public()
   @ApiOperation({ summary: 'Obtener un usuario por nombre de usuario' })
   @ApiResponse({ status: 200, description: 'Usuario recuperado con éxito.' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
@@ -37,7 +37,7 @@ export class UsuarioController {
   }
 
   @Patch(':username')
-  @Public()
+  // @Public()
   @ApiOperation({ summary: 'Actualizar un usuario existente' })
   @ApiResponse({ status: 200, description: 'Usuario actualizado con éxito.' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
@@ -48,7 +48,7 @@ export class UsuarioController {
   }
 
   @Delete(':username')
-  @Public()
+  // @Public()
   @ApiOperation({ summary: 'Eliminar un usuario por nombre de usuario' })
   @ApiResponse({ status: 200, description: 'Usuario eliminado con éxito.' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
