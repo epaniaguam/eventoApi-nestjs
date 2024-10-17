@@ -33,6 +33,11 @@ export class EventoController {
     return this.eventoService.updateById(id, updateEventoDto);
   }
 
+  @Patch('nombre/:id')
+  updateByName(@Param('id') id: string, @Body() updateEventoDto: UpdateEventoDto) {
+    return this.eventoService.updateByName(id, updateEventoDto);
+  }
+
   @Delete(':id')
   removeById(@Param('id') id: string) {
     return this.eventoService.removeById(id);

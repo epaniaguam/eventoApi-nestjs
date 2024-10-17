@@ -21,9 +21,9 @@ export class EventoEntity {
   @Column({ type: 'varchar', length: 100 })
   lugar: string;
 
-  // @Column({ type: 'uuid'})
-  // categoriaId: string;
+  @Column({ type: 'uuid'})
+  categoriaId: string;
   
-  @Column()
-  categoriaId: ObjectId;
+  // @Column()
+  // categoriaId: ObjectId;
 }

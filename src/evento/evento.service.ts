@@ -3,8 +3,8 @@ import { CreateEventoDto,UpdateEventoDto } from './dto/evento.dto';
 import { EventoEntity } from './entities/evento.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { stringToObjectid } from 'src/utils/convert.objetid.util';
 import { validate as validateUUID } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 
 @Injectable()
@@ -17,16 +17,19 @@ export class EventoService {
 
   async createEvento(evento: CreateEventoDto): Promise<EventoEntity> {
     const existeEvento = await this.eventoRepository.findOneBy({
-      nombreEvento: evento.nombreEvento,
+      nombreEvento: evento.nombreEvento, // podriamos añadir fecha para validad que no exista un evento con el mismo nombre y fecha
     });
     if (existeEvento) {
       return existeEvento;
     }
 
-    const newEvento = this.eventoRepository.create(evento);
+    const idUUID = uuidv4();
+    const eventoConUUID = Object.assign(evento, { id: idUUID });
+
+    const newEvento = this.eventoRepository.create(eventoConUUID);
     return await this.eventoRepository.save(newEvento);
   }
-
+    
   async findAll(): Promise<EventoEntity[]> {
     return this.eventoRepository.find();
   }
@@ -35,11 +38,14 @@ export class EventoService {
     if(!validateUUID(id)) {
       throw new HttpException('Id no válido', HttpStatus.BAD_REQUEST);
     }
+    const existeEvento = await this.eventoRepository.findOneBy({ id: id });
+    if (!existeEvento) {
+      throw new HttpException('Evento no encontrado', HttpStatus.NOT_FOUND);
+    }
     return this.eventoRepository.findOneBy({ id: id });
   }
 
   async findOneByName(nombre: string): Promise<EventoEntity> {
-    console.log('nombre', nombre);
     const evento = this.eventoRepository.findOneBy({ nombreEvento: nombre });
     if (!evento) {
       throw new HttpException('Evento no encontrado', HttpStatus.NOT_FOUND);
@@ -65,7 +71,25 @@ export class EventoService {
     }
 
     const eventoActualizado = Object.assign(existeEvento, eventoUpdate);
+    return await this.eventoRepository.save(eventoActualizado);
+  }
+
+  async updateByName(id: string, eventoUpdate: UpdateEventoDto ): Promise<EventoEntity> {
     
+    const existeEvento = await this.eventoRepository.findOneBy({ nombreEvento: id });
+
+    if (!existeEvento) {
+      throw new HttpException('Evento no encontrado', HttpStatus.NOT_FOUND);  
+    }
+
+    const nombreIgual = existeEvento.nombreEvento === eventoUpdate.nombreEvento
+    const fechaIgual = existeEvento.fecha === eventoUpdate.fecha
+
+    if(nombreIgual && fechaIgual) {
+      new HttpException('Otro evento con nombre y fecha iguales ya existe', HttpStatus.CONFLICT);
+    }
+    
+    const eventoActualizado = Object.assign(existeEvento, eventoUpdate);
     return await this.eventoRepository.save(eventoActualizado);
   }
 

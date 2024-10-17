@@ -27,9 +27,13 @@ export class BaseEventoDto {
 
   @ApiProperty({ description: 'Categoría del evento', required: false })
   @IsOptional()
-  @ValidateNested()
-  @Type(() => BaseCategoriaDto)
-  categoria?: BaseCategoriaDto;
+  categoriaId?: string;
+
+  // @ApiProperty({ description: 'Categoría del evento', required: false })
+  // @IsOptional()
+  // @ValidateNested()
+  // @Type(() => BaseCategoriaDto)
+  // categoria?: BaseCategoriaDto;
 }
 
 export class CreateEventoDto extends BaseEventoDto {
@@ -54,11 +58,15 @@ export class CreateEventoDto extends BaseEventoDto {
   @IsNotEmpty()
   lugar: string;
 
-  @ApiProperty({ description: 'Categoría del evento.' })
-  @ValidateNested()
-  @Type(() => CreateCategoriaDto)
+  @ApiProperty({ description: 'Categoría del evento', required: false })
   @IsNotEmpty()
-  categoria: CreateCategoriaDto;
+  categoriaId: string;
+  
+  // @ApiProperty({ description: 'Categoría del evento.' })
+  // @ValidateNested()
+  // @Type(() => CreateCategoriaDto)
+  // @IsNotEmpty()
+  // categoria: CreateCategoriaDto;
 }
 
 export class UpdateEventoDto extends BaseEventoDto {

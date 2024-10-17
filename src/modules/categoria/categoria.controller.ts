@@ -6,6 +6,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 
 @Controller('categoria')
 @ApiTags('Categorías')
+@Public()
 export class CategoriaController {
   constructor(private readonly categoriaService: CategoriaService) {}
 
@@ -26,12 +27,17 @@ export class CategoriaController {
     return this.categoriaService.findAll();
   }
   
-  @Get(':nombre')
+  @Get('nombre/:nombre')
   @ApiOperation({ summary: 'Obtener una categoría por nombre' })
   @ApiResponse({ status: 200, description: 'Categoría recuperada con éxito.' })
   @ApiResponse({ status: 404, description: 'Categoría no encontrada.' })
-  findOne(@Param('nombre') nombre: string) {
-    return this.categoriaService.findOne(nombre);
+  findByName(@Param('nombre') nombre: string) {
+    return this.categoriaService.findByName(nombre);
+  }
+
+  @Get(':id')
+  findById(@Param('id') id: string) {
+    return this.categoriaService.findById(id);
   }
   
   @Patch(':nombre')
@@ -41,7 +47,7 @@ export class CategoriaController {
   @ApiResponse({ status: 400, description: 'Datos inválidos.' })
   @ApiBody({ type: UpdateCategoriaDto })
   update(@Param('nombre') nombre: string, @Body() updateCategoriaDto: UpdateCategoriaDto) {
-    return this.categoriaService.update(nombre, updateCategoriaDto);
+    return this.categoriaService.updateByName(nombre, updateCategoriaDto);
   }
   
   @Delete(':nombre')
@@ -50,6 +56,6 @@ export class CategoriaController {
   @ApiResponse({ status: 404, description: 'Categoría no encontrada.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
   remove(@Param('nombre') nombre: string) {
-    return this.categoriaService.remove(nombre);
+    return this.categoriaService.removeByName(nombre);
   }
 }

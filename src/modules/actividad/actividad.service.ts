@@ -139,7 +139,7 @@ export class ActividadService {
       let obtenerDataEvento = await this.eventoService.findOneById(venta.eventoId.toString());
       // Solo si la categoria del evento ha cambiado, asignamos la nueva categoria al evento
       if(updateVenta.evento.categoria !== undefined){
-        const buscarCategoria = await this.categoriaService.findOne(updateVenta.evento.categoria.nombreCategoria);
+        const buscarCategoria = await this.categoriaService.findByName(updateVenta.evento.categoria.nombreCategoria);
         console.log('buscarCategoria', buscarCategoria);  
         if(!buscarCategoria){
           throw new HttpException({ message: 'Categoria no encontrada' }, HttpStatus.NOT_FOUND);
