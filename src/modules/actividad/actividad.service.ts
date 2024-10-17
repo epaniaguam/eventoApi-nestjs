@@ -9,7 +9,7 @@ import { CategoriaService } from '../categoria/categoria.service';
 import { stringToObjectid } from 'src/utils/convert.objetid.util';
 import { RegistrarVentaDto, UpdateVentaDto } from 'src/dto/venta.dto';
 import { UpdateCategoriaDto } from '../categoria/dto/categoria.dto';
-import { EventoEntity } from 'src/entities/evento.entity';
+import { EventoEntity } from 'src/evento/entities/evento.entity';
 @Injectable()
 export class ActividadService {
 
@@ -31,7 +31,7 @@ export class ActividadService {
     await queryRunner.startTransaction();
 
     try {
-      const existeUsuario = await this.usuarioService.findOneByUsername(venta.usuario.username);
+      const existeUsuario = await this.usuarioService.findByUsername(venta.usuario.username);
 
       // Crea el cliente si no existe
       const cliente = await this.clienteService.create(venta.cliente);
@@ -115,7 +115,7 @@ export class ActividadService {
 
     // Actualizamos usuario
     if(updateVenta.usuario !== undefined){
-      const buscarUsuario = await this.usuarioService.findOneByUsername(updateVenta.usuario.username);
+      const buscarUsuario = await this.usuarioService.findByUsername(updateVenta.usuario.username);
       // console.log('buscarUsuario', buscarUsuario);
       if(buscarUsuario){
         venta.usuarioId = buscarUsuario._id;
@@ -146,7 +146,7 @@ export class ActividadService {
         }
         
         // Actualizamos la categoria del evento
-        obtenerDataEvento.categoriaId = buscarCategoria._id;
+        obtenerDataEvento.categoriaId = buscarCategoria.id;
       }
 
       // Actualizamos los datos del evento

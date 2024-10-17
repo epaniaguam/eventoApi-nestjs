@@ -6,6 +6,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 
 @Controller('usuario')
 @ApiTags('Usuarios')
+@Public()
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
@@ -25,29 +26,55 @@ export class UsuarioController {
     return this.usuarioService.findAll();
   }
 
-  @Get(':username')
+  @Get('username/:username')
   @ApiOperation({ summary: 'Obtener un usuario por nombre de usuario' })
   @ApiResponse({ status: 200, description: 'Usuario recuperado con éxito.' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
-  findOne(@Param('username') username: string) {
-    return this.usuarioService.findOneByUsername(username);
+  findByUsername(@Param('username') username: string) {
+    return this.usuarioService.findByUsername(username);
   }
 
-  @Patch(':username')
+  @Get(':id')
+  @ApiOperation({ summary: 'Obtener un usuario por ID' })
+  @ApiResponse({ status: 200, description: 'Usuario recuperado con éxito.' })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
+  findById(@Param('id') id: string) {
+    return this.usuarioService.findById(id);
+  }
+
+  @Patch('username/:username')
   @ApiOperation({ summary: 'Actualizar un usuario existente' })
   @ApiResponse({ status: 200, description: 'Usuario actualizado con éxito.' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
   @ApiResponse({ status: 409, description: 'Otro usuario con el mismo nombre ya existe.' })
   @ApiBody({ type: UpdateUsuarioDto })
-  update(@Param('username') username: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
-    return this.usuarioService.update(username, updateUsuarioDto);
+  updateByName(@Param('username') username: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
+    return this.usuarioService.updateByName(username, updateUsuarioDto);
   }
 
-  @Delete(':username')
+  @Patch(':id')
+  @ApiOperation({ summary: 'Actualizar un usuario existente por ID' })
+  @ApiResponse({ status: 200, description: 'Usuario actualizado con éxito.' })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
+  @ApiResponse({ status: 409, description: 'Otro usuario con el mismo nombre ya existe.' })
+  updateById(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
+    return this.usuarioService.updateById(id, updateUsuarioDto);
+  }
+
+  @Delete('username/:username')
   @ApiOperation({ summary: 'Eliminar un usuario por nombre de usuario' })
   @ApiResponse({ status: 200, description: 'Usuario eliminado con éxito.' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
-  remove(@Param('username') username: string) {
-    return this.usuarioService.remove(username);
+  removeByUsername(@Param('username') username: string) {
+    return this.usuarioService.removeByUsername(username);
   }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Eliminar un usuario por ID' })
+  @ApiResponse({ status: 200, description: 'Usuario eliminado con éxito.' })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
+  removeById(@Param('id') id: string) {
+    return this.usuarioService.removeById(id);
+  }
+
 }

@@ -3,7 +3,7 @@ import { CreatePublicacionDto, UpdatePublicacionDto } from './dto/publicacion.dt
 import { EventoService } from '../actividad/servicesAux/evento.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PublicacionEntity } from './entities/publicacion.entity';
-import { EventoEntity } from 'src/entities/evento.entity';
+import { EventoEntity } from 'src/evento/entities/evento.entity';
 import { Repository } from 'typeorm';
 import { CategoriaService } from '../categoria/categoria.service';
 

@@ -4,7 +4,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EventoEntity } from 'src/entities/evento.entity';
+import { EventoEntity } from 'src/evento/entities/evento.entity';
 import { Repository } from 'typeorm';
 import { stringToObjectid } from 'src/utils/convert.objetid.util';
 import { CreateEventoDto, UpdateEventoDto } from 'src/dto/evento.dto';
