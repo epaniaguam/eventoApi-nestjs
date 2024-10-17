@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { VentasEntity } from 'src/entities/ventas.entity';
 import { DataSource, Repository } from 'typeorm';
-import { ClienteService } from './servicesAux/cliente.service';
+import { ClienteService } from '../../cliente/cliente.service';
 import { EventoService } from './servicesAux/evento.service';
 import { UsuarioService } from '../usuario/usuario.service';
 import { CategoriaService } from '../categoria/categoria.service';
@@ -34,7 +34,7 @@ export class ActividadService {
       const existeUsuario = await this.usuarioService.findOneByUsername(venta.usuario.username);
 
       // Crea el cliente si no existe
-      const cliente = await this.clienteService.createCliente(venta.cliente);
+      const cliente = await this.clienteService.create(venta.cliente);
 
       // Crea la categoria si no existe
       const categoria = await this.categoriaService.create(venta.evento.categoria);
@@ -125,7 +125,7 @@ export class ActividadService {
     // Actualizamos cliente
     //// Si no existe el cliente, se debe crear independientemente antes de  actualizar con ese cliente
     if(updateVenta.cliente !== undefined){
-      const buscarCliente = await this.clienteService.getClientByName(updateVenta.cliente.nombre);
+      const buscarCliente = await this.clienteService.findOneByName(updateVenta.cliente.nombre);
       console.log('buscarCliente', buscarCliente);
       if(buscarCliente){
         venta.clienteId = buscarCliente._id;
@@ -136,7 +136,7 @@ export class ActividadService {
     //// Modificaremos el evento existente con los nuevos datos, es decir, no se asignara otro evento, sino que se modificara el existente
     if(updateVenta.evento !== undefined){
 
-      let obtenerDataEvento = await this.eventoService.getEventoById(venta.eventoId.toString());
+      let obtenerDataEvento = await this.eventoService.findOneById(venta.eventoId.toString());
       // Solo si la categoria del evento ha cambiado, asignamos la nueva categoria al evento
       if(updateVenta.evento.categoria !== undefined){
         const buscarCategoria = await this.categoriaService.findOne(updateVenta.evento.categoria.nombreCategoria);
@@ -176,18 +176,18 @@ export class ActividadService {
       throw new HttpException('Venta no encontrada', HttpStatus.NOT_FOUND);
     }
 
-    const evento = await this.eventoService.getEventoById(existeVenta.eventoId.toString());
+    const evento = await this.eventoService.findOneById(existeVenta.eventoId.toString());
     if (!evento) {
       throw new HttpException('Evento no encontrado', HttpStatus.NOT_FOUND);
     }
-    await this.eventoService.remove(evento);
+    await this.eventoService.removeById(evento);
 
     return await this.ventasRepository.remove(existeVenta);
   }
 
   private async obtenerVentasById(venta: VentasEntity ): Promise<any>{
-    const cliente = await this.clienteService.getCliente(venta.clienteId.toString());
-    const evento = await this.eventoService.getEventoById(venta.eventoId.toString());
+    const cliente = await this.clienteService.findOneById(venta.clienteId.toString());
+    const evento = await this.eventoService.findOneById(venta.eventoId.toString());
     const usuario = await this.usuarioService.findById(venta.usuarioId.toString());
     const categoria = await this.categoriaService.findById(evento.categoriaId.toString());
 

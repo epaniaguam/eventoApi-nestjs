@@ -1,13 +1,11 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { CreateEventoDto,UpdateEventoDto } from './dto/evento.dto';
+import { EventoEntity } from './entities/evento.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EventoEntity } from 'src/entities/evento.entity';
 import { Repository } from 'typeorm';
 import { stringToObjectid } from 'src/utils/convert.objetid.util';
-import { CreateEventoDto, UpdateEventoDto } from 'src/dto/evento.dto';
+import { validate as validateUUID } from 'uuid';
+
 
 @Injectable()
 export class EventoService {
@@ -34,8 +32,10 @@ export class EventoService {
   }
 
   async findOneById(id: string): Promise<EventoEntity> {
-    const objectId = await stringToObjectid(id);
-    return this.eventoRepository.findOneBy({ _id: objectId });
+    if(!validateUUID(id)) {
+      throw new HttpException('Id no válido', HttpStatus.BAD_REQUEST);
+    }
+    return this.eventoRepository.findOneBy({ id: id });
   }
 
   async findOneByName(nombre: string): Promise<EventoEntity> {
@@ -48,8 +48,11 @@ export class EventoService {
   }
 
   async updateById(id: string, eventoUpdate: UpdateEventoDto ): Promise<EventoEntity> {
-    const objectId = await stringToObjectid(id);
-    const existeEvento = await this.eventoRepository.findOneBy({ _id: objectId });
+    if(!validateUUID(id)) {
+      throw new HttpException('Id no válido', HttpStatus.BAD_REQUEST);
+    }
+    const existeEvento = await this.eventoRepository.findOneBy({ id: id });
+
     if (!existeEvento) {
       throw new HttpException('Evento no encontrado', HttpStatus.NOT_FOUND);  
     }
@@ -66,8 +69,14 @@ export class EventoService {
     return await this.eventoRepository.save(eventoActualizado);
   }
 
-  async removeById(evento: EventoEntity): Promise<EventoEntity> {
+  async removeById(id: string): Promise<EventoEntity> {
+    if(!validateUUID(id)) {
+      throw new HttpException('Id no válido', HttpStatus.BAD_REQUEST);
+    }
+    const evento = await this.eventoRepository.findOneBy({ id: id });
+    if (!evento) {
+      throw new HttpException('Evento no encontrado', HttpStatus.NOT_FOUND);
+    }
     return await this.eventoRepository.remove(evento);
   }
-
 }

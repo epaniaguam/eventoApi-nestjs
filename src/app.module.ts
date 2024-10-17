@@ -7,6 +7,9 @@ import { UsuarioModule } from './modules/usuario/usuario.module';
 import { ActividadModule } from './modules/actividad/actividad.module';
 import { PublicacionModule } from './modules/publicacion/publicacion.module';
 import { CategoriaModule } from './modules/categoria/categoria.module';
+import { ClienteModule } from './cliente/cliente.module';
+import { VentaModule } from './venta/venta.module';
+import { EventoModule } from './evento/evento.module';
 
 @Module({
   imports: [
@@ -23,6 +26,9 @@ import { CategoriaModule } from './modules/categoria/categoria.module';
     ActividadModule,
     PublicacionModule,
     CategoriaModule,
+    ClienteModule,
+    VentaModule,
+    EventoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

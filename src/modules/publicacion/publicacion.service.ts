@@ -36,7 +36,7 @@ export class PublicacionService {
     }
 
 
-    const existeEvento = await this.eventoService.getEventoByNombre(createPublicacionDto.eventoNombre);
+    const existeEvento = await this.eventoService.findOneByName(createPublicacionDto.eventoNombre);
     if (!existeEvento) {
       throw new HttpException('Evento no encontrado', HttpStatus.NOT_FOUND);
     }
@@ -79,7 +79,7 @@ export class PublicacionService {
     // Actualizamos evento
     // Designar un nuevo evento a la publicacion
     if(updPubliDto.eventoNombre !== undefined){
-      const existeEvento = await this.eventoService.getEventoByNombre(updPubliDto.eventoNombre);
+      const existeEvento = await this.eventoService.findOneByName(updPubliDto.eventoNombre);
       console.log('existeEvento', existeEvento);
       if (existeEvento) {
         publicacion.eventoId = existeEvento._id;
@@ -115,7 +115,7 @@ export class PublicacionService {
 
   private async obtenerPublicacionesByIdEvento(publicacion: PublicacionEntity): Promise<any> {
 
-    const evento = await this.eventoService.getEventoById(publicacion.eventoId.toString());
+    const evento = await this.eventoService.findOneById(publicacion.eventoId.toString());
 
     const categoria = await this.categoriaService.findById(evento.categoriaId.toString());
   

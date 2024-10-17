@@ -14,16 +14,16 @@ export class ClienteService {
   ) {}
 
 
-  async getClientes(): Promise<ClienteEntity[]> {
+  async findAll(): Promise<ClienteEntity[]> {
     return this.clienteRepository.find();
   }
 
-  async getCliente(id: string):  Promise<ClienteEntity> {
+  async findOne(id: string):  Promise<ClienteEntity> {
     const objectId = await stringToObjectid(id);
     return this.clienteRepository.findOneBy({ _id: objectId });
   }
 
-  async getClientByName(nombre: string): Promise<ClienteEntity> {
+  async findOneByName(nombre: string): Promise<ClienteEntity> {
     console.log('nombre', nombre);
     const cliente = this.clienteRepository.findOneBy({ nombre: nombre });
     if (!cliente) {
@@ -32,7 +32,7 @@ export class ClienteService {
     return cliente;
   }
 
-  async createCliente(cliente: CreateClienteDto): Promise<ClienteEntity> {
+  async create(cliente: CreateClienteDto): Promise<ClienteEntity> {
     const existeCliente = await this.clienteRepository.findOneBy({
       nombre: cliente.nombre,
     });
@@ -44,7 +44,7 @@ export class ClienteService {
     return await this.clienteRepository.save(newcliente);
   }
 
-  async updateCliente(
+  async update(
     nombre: string,
     cliente: ClienteEntity,
   ): Promise<ClienteEntity> {

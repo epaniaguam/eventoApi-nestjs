@@ -6,6 +6,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 
 @Controller('actividad')
 @ApiTags('Actividades')
+@Public()
 export class ActividadController {
   constructor(private readonly actividadService: ActividadService) {}
 
