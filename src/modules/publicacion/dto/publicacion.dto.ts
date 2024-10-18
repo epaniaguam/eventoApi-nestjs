@@ -23,7 +23,7 @@ export class BasePublicacionDto {
   @ApiProperty({ description: 'Nombre del evento asociado a la publicación', required: false })
   @IsOptional()
   @IsString()
-  eventoNombre? : string;
+  eventoId? : string;
 }
 
 export class CreatePublicacionDto extends BasePublicacionDto {
@@ -46,7 +46,7 @@ export class CreatePublicacionDto extends BasePublicacionDto {
   @ApiProperty({ description: 'Nombre del evento asociado a la publicación' })
   @IsString()
   @IsNotEmpty()
-  eventoNombre: string;
+  eventoId: string;
 }
 
 export class UpdatePublicacionDto extends BasePublicacionDto {

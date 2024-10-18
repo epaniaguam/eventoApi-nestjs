@@ -6,6 +6,9 @@ export class PublicacionEntity {
   @ObjectIdColumn()
   _id: ObjectId;
 
+  @Column('uuid')
+  id: string;
+
   @Column({ type: 'varchar', length: 100 })
   tituloPublicacion: string;
 
@@ -15,7 +18,7 @@ export class PublicacionEntity {
   @Column({ type: 'date'})
   fechaPublicacion: Date;
 
-  @Column()
-  eventoId: ObjectId;
+  @Column({ type: 'uuid'})
+  eventoId: string;
 
 }

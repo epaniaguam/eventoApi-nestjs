@@ -7,6 +7,7 @@ import { EventoEntity } from 'src/evento/entities/evento.entity';
 import { EventoService } from '../actividad/servicesAux/evento.service';
 import { CategoriaService } from '../categoria/categoria.service';
 import { CategoriaModule } from '../categoria/categoria.module';
+import { EventoModule } from 'src/evento/evento.module';
 
 @Module({
   imports: [
@@ -14,12 +15,12 @@ import { CategoriaModule } from '../categoria/categoria.module';
       PublicacionEntity,
       EventoEntity,
     ]),
-    CategoriaModule,  
+    CategoriaModule,
+    EventoModule
   ],
   controllers: [PublicacionController],
   providers: [
     PublicacionService,
-    EventoService,
     ],
 })
 export class PublicacionModule {}
