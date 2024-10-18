@@ -7,7 +7,7 @@ import { EventoService } from './servicesAux/evento.service';
 import { UsuarioService } from '../usuario/usuario.service';
 import { CategoriaService } from '../categoria/categoria.service';
 import { stringToObjectid } from 'src/utils/convert.objetid.util';
-import { RegistrarVentaDto, UpdateVentaDto } from 'src/dto/venta.dto';
+import { CrearteVentaDto, UpdateVentaDto } from 'src/dto/venta.dto';
 import { UpdateCategoriaDto } from '../categoria/dto/categoria.dto';
 import { EventoEntity } from 'src/evento/entities/evento.entity';
 @Injectable()
@@ -25,7 +25,7 @@ export class ActividadService {
     private dataSource: DataSource,
   ) {}
 
-  async create(venta: RegistrarVentaDto): Promise<VentasEntity> {
+  async create(venta: CrearteVentaDto): Promise<VentasEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -186,7 +186,7 @@ export class ActividadService {
   }
 
   private async obtenerVentasById(venta: VentasEntity ): Promise<any>{
-    const cliente = await this.clienteService.findOneById(venta.clienteId.toString());
+    const cliente = await this.clienteService.findById(venta.clienteId.toString());
     const evento = await this.eventoService.findOneById(venta.eventoId.toString());
     const usuario = await this.usuarioService.findById(venta.usuarioId.toString());
     const categoria = await this.categoriaService.findById(evento.categoriaId.toString());

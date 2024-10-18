@@ -19,8 +19,13 @@ export class EventoController {
   }
 
   @Get(':id')
-  findOneById(@Param('id') id: string) {
-    return this.eventoService.findOneById(id);
+  findById(@Param('id') id: string) {
+    return this.eventoService.findById(id);
+  }
+
+  @Get('detailed/:id')
+  findByIdDetailed(@Param('id') id: string) {
+    return this.eventoService.findByIdDetailed(id);
   }
 
   @Get('nombre/:nombre')

@@ -6,7 +6,7 @@ import { ReferenciarUsuarioDto } from "src/modules/usuario/dto/usuario.dto";
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class RegistrarVentaDto {
+export class CrearteVentaDto {
   @ApiProperty({ description: 'Datos del usuario que realiza la venta' })
   @ValidateNested()
   @Type(() => ReferenciarUsuarioDto)

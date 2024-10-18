@@ -20,7 +20,7 @@ export class BasePublicacionDto {
   @IsDate()
   fechaPublicacion? : Date;
 
-  @ApiProperty({ description: 'Nombre del evento asociado a la publicación', required: false })
+  @ApiProperty({ description: 'Id del evento asociado a la publicación', required: false })
   @IsOptional()
   @IsString()
   eventoId? : string;
@@ -43,7 +43,7 @@ export class CreatePublicacionDto extends BasePublicacionDto {
   @IsDate()
   fechaPublicacion: Date;
 
-  @ApiProperty({ description: 'Nombre del evento asociado a la publicación' })
+  @ApiProperty({ description: 'Id del evento asociado a la publicación' })
   @IsString()
   @IsNotEmpty()
   eventoId: string;

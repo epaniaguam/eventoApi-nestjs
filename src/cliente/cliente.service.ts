@@ -34,7 +34,7 @@ export class ClienteService {
     return this.clienteRepository.find();
   }
 
-  async findOneById(id: string):  Promise<ClienteEntity> {
+  async findById(id: string):  Promise<ClienteEntity> {
     if (!validateUUID(id)) {
       throw new HttpException('UUID no válido', HttpStatus.BAD_REQUEST);
     }

@@ -37,7 +37,7 @@ export class PublicacionService {
     if (existePublicacion) {
       throw new HttpException({ message: 'La publicacion ya existe' }, HttpStatus.CONFLICT);
     }
-    const existeEvento = await this.eventoService.findOneById(createPublicacionDto.eventoId );
+    const existeEvento = await this.eventoService.findById(createPublicacionDto.eventoId );
 
     const idUUID = uuidv4();
     const publicacionConUUID = Object.assign(createPublicacionDto, { id: idUUID } )
@@ -143,7 +143,7 @@ export class PublicacionService {
 
   private async obtenerPublicacionesByIdEvento(publicacion: PublicacionEntity): Promise<any> {
     // console.log('publicacion', publicacion);
-    const evento = await this.eventoService.findOneById(publicacion.eventoId);
+    const evento = await this.eventoService.findById(publicacion.eventoId);
     const categoria = await this.categoriaService.findById(evento.categoriaId);
   
 

@@ -1,9 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { VentaService } from './venta.service';
-import { CreateVentaDto } from './dto/create-venta.dto';
-import { UpdateVentaDto } from './dto/update-venta.dto';
+import { CreateVentaDto, UpdateVentaDto } from './dto/venta.dto'
+import { Public } from 'src/modules/auth/decorators/public.decorator';
+import { VentaEntity } from './entities/venta.entity';
 
 @Controller('venta')
+@Public()
 export class VentaController {
   constructor(private readonly ventaService: VentaService) {}
 
@@ -18,17 +20,23 @@ export class VentaController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.ventaService.findOne(+id);
+  findById(@Param('id') id: string) {
+    return this.ventaService.findById(id);
+  }
+
+  @Get('detailed/:id')
+  findByIdDetailed(@Param('id') id: string) {
+    return this.ventaService.findByIdDetailed(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVentaDto: UpdateVentaDto) {
-    return this.ventaService.update(+id, updateVentaDto);
+  updateById(@Param('id') id: string, @Body() updateVentaDto: UpdateVentaDto) {
+    return this.ventaService.updateById(id, updateVentaDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ventaService.remove(+id);
+  removeById(@Param('id') id: string) {
+    return this.ventaService.removeById(id);
   }
+
 }

@@ -20,7 +20,7 @@ export class ClienteController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.clienteService.findOneById(id);
+    return this.clienteService.findById(id);
   }
 
   @Get('nombre/:nombre')

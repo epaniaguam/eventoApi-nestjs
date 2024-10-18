@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ActividadService } from './actividad.service';
 import { Public } from '../auth/decorators/public.decorator';
-import { RegistrarVentaDto, UpdateVentaDto } from 'src/dto/venta.dto';
+import { CrearteVentaDto, UpdateVentaDto } from 'src/dto/venta.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 
 @Controller('actividad')
@@ -15,8 +15,8 @@ export class ActividadController {
   @ApiResponse({ status: 201, description: 'Venta registrada con éxito.' })
   @ApiResponse({ status: 409, description: 'Ya existe una venta con el mismo cliente y evento.' })
   @ApiResponse({ status: 400, description: 'Datos inválidos.' })
-  @ApiBody({ type: RegistrarVentaDto })
-  create(@Body() ventaDto: RegistrarVentaDto) {
+  @ApiBody({ type: CrearteVentaDto })
+  create(@Body() ventaDto: CrearteVentaDto) {
     return this.actividadService.create(ventaDto);
   }
 

@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { validate as validateUUID } from 'uuid';
 import {v4 as uuidv4} from 'uuid';
+import { CategoriaService } from 'src/modules/categoria/categoria.service';
 
 
 @Injectable()
@@ -12,6 +13,8 @@ export class EventoService {
   constructor(
     @InjectRepository(EventoEntity)
     private eventoRepository: Repository<EventoEntity>,
+
+    private categoriaService: CategoriaService,
   ) {}
 
 
@@ -34,7 +37,7 @@ export class EventoService {
     return this.eventoRepository.find();
   }
 
-  async findOneById(id: string): Promise<EventoEntity> {
+  async findById(id: string): Promise<EventoEntity> {
     if(!validateUUID(id)) {
       throw new HttpException('Id no válido', HttpStatus.BAD_REQUEST);
     }
@@ -43,6 +46,20 @@ export class EventoService {
       throw new HttpException('Evento no encontrado', HttpStatus.NOT_FOUND);
     }
     return this.eventoRepository.findOneBy({ id: id });
+  }
+
+  async findByIdDetailed(id: string): Promise<EventoEntity> {
+    if(!validateUUID(id)) {
+      throw new HttpException('Id no válido', HttpStatus.BAD_REQUEST);
+    }
+    const existeEvento = await this.eventoRepository.findOneBy({ id: id });
+    if (!existeEvento) {
+      throw new HttpException('Evento no encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    const result = await this.obtenerEventoById(existeEvento);
+
+    return result;
   }
 
   async findOneByName(nombre: string): Promise<EventoEntity> {
@@ -103,4 +120,19 @@ export class EventoService {
     }
     return await this.eventoRepository.remove(evento);
   }
+
+  private async obtenerEventoById(evento: EventoEntity): Promise<any> {
+    const categoria = await this.categoriaService.findById(evento.categoriaId);
+    
+    const eventoData = {
+      id: evento.id,
+      nombreEvento: evento.nombreEvento,
+      descripcion: evento.descripcion,
+      fecha: evento.fecha,
+      lugar: evento.lugar,
+      categoria: categoria.nombreCategoria,
+    }
+    return eventoData;
+  }
+
 }
