@@ -6,6 +6,9 @@ export class ClienteEntity {
   @ObjectIdColumn()
   _id: ObjectId;
 
+  @Column('uuid')
+  id: string;
+
   @Column({ type: 'varchar', length: 50 })
   nombre: string;
 

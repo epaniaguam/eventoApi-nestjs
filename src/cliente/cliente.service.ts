@@ -5,6 +5,8 @@ import { ClienteEntity } from 'src/cliente/entities/cliente.entity';
 import { Repository } from 'typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { stringToObjectid } from 'src/utils/convert.objetid.util';
+import { validate as validateUUID } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 @Injectable()
 export class ClienteService {
@@ -21,7 +23,10 @@ export class ClienteService {
       return existeCliente;
     }
 
-    const newcliente = await this.clienteRepository.create(cliente);
+    const idUUID = uuidv4();
+    const clienteConUUID = Object.assign(cliente, { id: idUUID });
+
+    const newcliente = await this.clienteRepository.create(clienteConUUID);
     return await this.clienteRepository.save(newcliente);
   }
 
@@ -30,8 +35,16 @@ export class ClienteService {
   }
 
   async findOneById(id: string):  Promise<ClienteEntity> {
-    const objectId = await stringToObjectid(id);
-    return this.clienteRepository.findOneBy({ _id: objectId });
+    if (!validateUUID(id)) {
+      throw new HttpException('UUID no válido', HttpStatus.BAD_REQUEST);
+    }
+
+    const existeCliente = await this.clienteRepository.findOneBy({ id: id });
+    if (!existeCliente) {
+      throw new HttpException('Cliente no encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    return existeCliente;
   }
 
   async findOneByName(nombre: string): Promise<ClienteEntity> {
@@ -43,15 +56,16 @@ export class ClienteService {
     return cliente;
   }
 
-  async updateById(id: string, cliente: UpdateClienteDto
-    ): Promise<ClienteEntity> {
-    const objectId = await stringToObjectid(id);
-    const existeCliente = await this.clienteRepository.findOneBy({ _id: objectId });
+  async updateById(id: string, cliente: UpdateClienteDto): Promise<ClienteEntity> {
+    if (!validateUUID(id)) {
+      throw new HttpException('UUID no válido', HttpStatus.BAD_REQUEST);
+    }
+    const existeCliente = await this.clienteRepository.findOneBy({ id: id });
     if (!existeCliente) {
       throw new HttpException('Cliente no encontrado', HttpStatus.NOT_FOUND);
     }
 
-    await this.clienteRepository.update({ _id: objectId }, cliente);
+    await this.clienteRepository.update({ id: id }, cliente);
     return { ...existeCliente, ...cliente };
   }
   
@@ -64,19 +78,21 @@ export class ClienteService {
     if (!existeCliente) {
       throw new HttpException('Cliente no encontrado', HttpStatus.NOT_FOUND);
     }
-
     await this.clienteRepository.update({ nombre }, cliente);
     return { ...existeCliente, ...cliente };
   }
 
   async removeById(id: string): Promise<{ message: string }> {
-    const objectId = await stringToObjectid(id);
-    const existeCliente = await this.clienteRepository.findOneBy({ _id: objectId });
+    if (!validateUUID(id)) {
+      throw new HttpException('UUID no válido', HttpStatus.BAD_REQUEST);
+    }
+
+    const existeCliente = await this.clienteRepository.findOneBy({ id: id });
     if (!existeCliente) {
       throw new HttpException('Cliente no encontrado', HttpStatus.NOT_FOUND);
     }
 
-    await this.clienteRepository.delete({ _id: objectId });
+    await this.clienteRepository.delete({ id: id });
     return { message: `Cliente de id: ${id}, eliminado` };
   }
 

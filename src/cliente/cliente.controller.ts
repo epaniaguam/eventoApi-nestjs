@@ -29,7 +29,7 @@ export class ClienteController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateClienteDto: UpdateClienteDto) {
+  updateById(@Param('id') id: string, @Body() updateClienteDto: UpdateClienteDto) {
     return this.clienteService.updateById(id, updateClienteDto);
   }
 
