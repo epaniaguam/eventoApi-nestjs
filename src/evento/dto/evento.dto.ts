@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import { IsDate, IsNotEmpty, IsOptional, IsString, ValidateNested } from "class-validator";
-import { BaseCategoriaDto, CreateCategoriaDto } from "src/modules/categoria/dto/categoria.dto";
+import { BaseCategoriaDto, CreateCategoriaDto } from "src/categoria/dto/categoria.dto";
 
 export class BaseEventoDto {
   @ApiProperty({ description: 'Nombre del evento', required: false })

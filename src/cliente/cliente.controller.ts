@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ClienteService } from './cliente.service';
 import { CreateClienteDto, UpdateClienteDto } from './dto/cliente.dto';
-import { Public } from 'src/modules/auth/decorators/public.decorator';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('cliente')
 @Public()

@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { validate as validateUUID } from 'uuid';
 import {v4 as uuidv4} from 'uuid';
-import { CategoriaService } from 'src/modules/categoria/categoria.service';
+import { CategoriaService } from 'src/categoria/categoria.service';
 
 
 @Injectable()

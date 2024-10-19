@@ -1,8 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { VentaService } from './venta.service';
-import { CreateVentaDto, UpdateVentaDto } from './dto/venta.dto'
-import { Public } from 'src/modules/auth/decorators/public.decorator';
-import { VentaEntity } from './entities/venta.entity';
+import { CreateVentaDto, UpdateVentaDto } from './dto/venta.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('venta')
 @Public()
@@ -38,5 +45,4 @@ export class VentaController {
   removeById(@Param('id') id: string) {
     return this.ventaService.removeById(id);
   }
-
 }

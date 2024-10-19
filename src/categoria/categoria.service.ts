@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateCategoriaDto, UpdateCategoriaDto } from './dto/categoria.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoriaEntity } from './entities/categoria.entity';

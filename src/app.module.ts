@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './modules/auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsuarioModule } from './modules/usuario/usuario.module';
-import { ActividadModule } from './modules/actividad/actividad.module';
-import { PublicacionModule } from './modules/publicacion/publicacion.module';
-import { CategoriaModule } from './modules/categoria/categoria.module';
+import { UsuarioModule } from './usuario/usuario.module';
+import { ActividadModule } from './actividad/actividad.module';
+import { PublicacionModule } from './publicacion/publicacion.module';
+import { CategoriaModule } from './categoria/categoria.module';
 import { ClienteModule } from './cliente/cliente.module';
 import { VentaModule } from './venta/venta.module';
 import { EventoModule } from './evento/evento.module';

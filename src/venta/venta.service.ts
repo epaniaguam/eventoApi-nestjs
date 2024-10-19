@@ -1,17 +1,16 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { CreateVentaDto,UpdateVentaDto } from './dto/venta.dto';
+import { CreateVentaDto, UpdateVentaDto } from './dto/venta.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { VentaEntity } from './entities/venta.entity';
 import { Repository } from 'typeorm';
 import { validate as validateUUID } from 'uuid';
 import { v4 as uuidv4 } from 'uuid';
-import { UsuarioEntity } from 'src/modules/usuario/entities/usuario.entity';
+import { UsuarioEntity } from 'src/usuario/entities/usuario.entity';
 import { ClienteEntity } from 'src/cliente/entities/cliente.entity';
 import { EventoEntity } from 'src/evento/entities/evento.entity';
-import { UsuarioService } from 'src/modules/usuario/usuario.service';
+import { UsuarioService } from 'src/usuario/usuario.service';
 import { ClienteService } from 'src/cliente/cliente.service';
 import { EventoService } from 'src/evento/evento.service';
-
 
 @Injectable()
 export class VentaService {
@@ -33,68 +32,92 @@ export class VentaService {
   async create(createVentaDto: CreateVentaDto) {
     // VALIDACIONES
     // Comprobar si los id de usuario, cliente y evento existen
-    if(validateUUID(createVentaDto.usuarioId)) {
+    if (validateUUID(createVentaDto.usuarioId)) {
       const existeUsuario = await this.usuarioRepository.findOne({
-        where: { 
+        where: {
           id: createVentaDto.usuarioId,
         },
       });
 
-      if(!existeUsuario){
-        throw new HttpException({ message: `El usuario con id ${createVentaDto.usuarioId} no existe` }, 404);
+      if (!existeUsuario) {
+        throw new HttpException(
+          {
+            message: `El usuario con id ${createVentaDto.usuarioId} no existe`,
+          },
+          404,
+        );
       }
-
-    }else{
-      throw new HttpException({ message: 'El id de usuario no es válido' }, 400);
+    } else {
+      throw new HttpException(
+        { message: 'El id de usuario no es válido' },
+        400,
+      );
     }
 
-    if(validateUUID(createVentaDto.clienteId)) {
+    if (validateUUID(createVentaDto.clienteId)) {
       const existeCliente = await this.clienteRepository.findOne({
-        where: { 
+        where: {
           id: createVentaDto.clienteId,
         },
       });
 
-      if(!existeCliente){
-        throw new HttpException({ message: `El cliente con id ${createVentaDto.clienteId} no existe` }, 404);
+      if (!existeCliente) {
+        throw new HttpException(
+          {
+            message: `El cliente con id ${createVentaDto.clienteId} no existe`,
+          },
+          404,
+        );
       }
-    }else{
-      throw new HttpException({ message: 'El id de cliente no es válido' }, 400);
+    } else {
+      throw new HttpException(
+        { message: 'El id de cliente no es válido' },
+        400,
+      );
     }
 
-    if(validateUUID(createVentaDto.eventoId)) {
+    if (validateUUID(createVentaDto.eventoId)) {
       const existeEvento = await this.eventoRepository.findOne({
-        where: { 
+        where: {
           id: createVentaDto.eventoId,
         },
       });
 
-      if(!existeEvento){
-        throw new HttpException({ message: `El evento con id ${createVentaDto.eventoId} no existe` }, 404);
+      if (!existeEvento) {
+        throw new HttpException(
+          { message: `El evento con id ${createVentaDto.eventoId} no existe` },
+          404,
+        );
       }
-    }else{
+    } else {
       throw new HttpException({ message: 'El id de evento no es válido' }, 400);
     }
-    
+
     // fecha de venta
-    if( createVentaDto.fechaVenta > new Date() ){
-      throw new HttpException({ message: 'La fecha de venta no puede ser mayor a la fecha actual' }, 400);
+    if (createVentaDto.fechaVenta > new Date()) {
+      throw new HttpException(
+        { message: 'La fecha de venta no puede ser mayor a la fecha actual' },
+        400,
+      );
     }
 
     const ventaExistente = await this.ventasRepository.findOne({
       where: {
         clienteId: createVentaDto.clienteId,
         eventoId: createVentaDto.eventoId,
-      }
+      },
     });
 
     if (ventaExistente) {
-      throw new HttpException({ message: 'Ya existe una venta con el mismo cliente y evento' }, 409);
+      throw new HttpException(
+        { message: 'Ya existe una venta con el mismo cliente y evento' },
+        409,
+      );
     }
     // FIN DE VALIDACIONES
 
     const idUUID = uuidv4();
-    const ventaConUUID = Object.assign(createVentaDto, { id: idUUID,});
+    const ventaConUUID = Object.assign(createVentaDto, { id: idUUID });
 
     const datainfo = this.ventasRepository.create(ventaConUUID);
     return await this.ventasRepository.save(datainfo);
@@ -106,24 +129,30 @@ export class VentaService {
 
   async findById(id: string) {
     const existeVenta = this.ventasRepository.findOne({
-      where: { 
+      where: {
         id: id,
       },
     });
     if (!existeVenta) {
-      throw new HttpException({ message: `La venta con id ${id} no existe` }, 404);
+      throw new HttpException(
+        { message: `La venta con id ${id} no existe` },
+        404,
+      );
     }
     return existeVenta;
   }
 
   async findByIdDetailed(id: string) {
     const existeVenta = await this.ventasRepository.findOne({
-      where: { 
+      where: {
         id: id,
       },
     });
     if (!existeVenta) {
-      throw new HttpException({ message: `La venta con id ${id} no existe` }, 404);
+      throw new HttpException(
+        { message: `La venta con id ${id} no existe` },
+        404,
+      );
     }
 
     const result = await this.obtenerVentaByIdEvento(existeVenta);
@@ -131,23 +160,32 @@ export class VentaService {
     return result;
   }
 
-  async updateById(id: string, updateVentaDto: UpdateVentaDto): Promise<VentaEntity> {
-    if(!validateUUID(id)) {
+  async updateById(
+    id: string,
+    updateVentaDto: UpdateVentaDto,
+  ): Promise<VentaEntity> {
+    if (!validateUUID(id)) {
       throw new HttpException({ message: 'Id no válido' }, 400);
     }
     const existeVenta = await this.ventasRepository.findOne({
-      where: { 
+      where: {
         id: id,
       },
     });
 
     if (!existeVenta) {
-      throw new HttpException({ message: `La venta con id ${id} no existe` }, 404);
+      throw new HttpException(
+        { message: `La venta con id ${id} no existe` },
+        404,
+      );
     }
 
     // fecha de venta
-    if( updateVentaDto.fechaVenta > new Date() ){
-      throw new HttpException({ message: 'La fecha de venta no puede ser mayor a la fecha actual' }, 400);
+    if (updateVentaDto.fechaVenta > new Date()) {
+      throw new HttpException(
+        { message: 'La fecha de venta no puede ser mayor a la fecha actual' },
+        400,
+      );
     }
 
     const ventaUpdate = Object.assign(existeVenta, updateVentaDto);
@@ -155,48 +193,47 @@ export class VentaService {
   }
 
   async removeById(id: string): Promise<VentaEntity> {
-    if(!validateUUID(id)) {
+    if (!validateUUID(id)) {
       throw new HttpException({ message: 'Id no válido' }, 400);
     }
     const existeVenta = await this.ventasRepository.findOne({
-      where: { 
+      where: {
         id: id,
       },
     });
 
     if (!existeVenta) {
-      throw new HttpException({ message: `La venta con id ${id} no existe` }, 404);
+      throw new HttpException(
+        { message: `La venta con id ${id} no existe` },
+        404,
+      );
     }
 
     return await this.ventasRepository.remove(existeVenta);
   }
 
-  
   private async obtenerVentaByIdEvento(venta: VentaEntity): Promise<any> {
     const usuario = await this.usuarioService.findById(venta.usuarioId);
-    // console.log('usuario', usuario);
     const cliente = await this.clienteService.findById(venta.clienteId);
-    // console.log('cliente', cliente);
     const evento = await this.eventoService.findByIdDetailed(venta.eventoId);
-    // console.log('evento', evento);
 
     const usuarioData = {
       id: usuario.id,
       name: usuario.name,
       username: usuario.username,
-    }
+    };
     const clienteData = {
       id: cliente.id,
       nombre: cliente.nombre,
       edad: cliente.edad,
-    }
+    };
     const result = {
       id: venta.id,
       usuario: usuarioData,
       cliente: clienteData,
       evento: evento,
       precio: venta.precio,
-    }
+    };
     return result;
   }
 }

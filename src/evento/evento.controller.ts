@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { EventoService } from './evento.service';
 import { CreateEventoDto,UpdateEventoDto } from './dto/evento.dto';
-import { Public } from 'src/modules/auth/decorators/public.decorator';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('evento')
 @Public()

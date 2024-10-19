@@ -3,7 +3,7 @@ import { EventoService } from './evento.service';
 import { EventoController } from './evento.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventoEntity } from './entities/evento.entity';
-import { CategoriaModule } from 'src/modules/categoria/categoria.module';
+import { CategoriaModule } from 'src/categoria/categoria.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([EventoEntity]),CategoriaModule],

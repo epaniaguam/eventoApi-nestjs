@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ClienteEntity } from 'src/cliente/entities/cliente.entity';
 import { Repository } from 'typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { stringToObjectid } from 'src/utils/convert.objetid.util';
 import { validate as validateUUID } from 'uuid';
 import {v4 as uuidv4} from 'uuid';
 
@@ -48,7 +47,6 @@ export class ClienteService {
   }
 
   async findOneByName(nombre: string): Promise<ClienteEntity> {
-    // console.log('nombre', nombre);
     const cliente = this.clienteRepository.findOneBy({ nombre: nombre });
     if (!cliente) {
       throw new HttpException('Cliente no encontrado', HttpStatus.NOT_FOUND);
@@ -97,7 +95,6 @@ export class ClienteService {
   }
 
   async removeByName(nombre: string): Promise<{ message: string }> {
-    console.log('nombre', nombre);
     const existeCliente = await this.clienteRepository.findOneBy({ nombre });
     if (!existeCliente) {
       throw new HttpException('Cliente no encontrado', HttpStatus.NOT_FOUND);
