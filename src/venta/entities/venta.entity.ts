@@ -18,6 +18,9 @@ export class VentaEntity {
   @Column({ type: 'uuid'})
   eventoId: string;
 
+  @Column({ type: 'date' })
+  fechaVenta: Date;
+
   @Column({ type: 'number' })
   precio: number;
 }

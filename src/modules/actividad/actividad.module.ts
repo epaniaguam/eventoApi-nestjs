@@ -8,6 +8,7 @@ import { EventoEntity } from 'src/evento/entities/evento.entity';
 import { UsuarioModule } from '../usuario/usuario.module';
 import { CategoriaModule } from '../categoria/categoria.module';
 import { ClienteModule } from 'src/cliente/cliente.module';
+import { VentaModule } from 'src/venta/venta.module';
 
 @Module({ 
   imports: [
@@ -17,7 +18,8 @@ import { ClienteModule } from 'src/cliente/cliente.module';
     ]),
     UsuarioModule,
     CategoriaModule,
-    ClienteModule
+    ClienteModule,
+    VentaModule,
   ],
   controllers: [ActividadController],
   providers: [

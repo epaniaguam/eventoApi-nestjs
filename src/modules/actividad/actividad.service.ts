@@ -7,9 +7,10 @@ import { EventoService } from './servicesAux/evento.service';
 import { UsuarioService } from '../usuario/usuario.service';
 import { CategoriaService } from '../categoria/categoria.service';
 import { stringToObjectid } from 'src/utils/convert.objetid.util';
-import { CrearteVentaDto, UpdateVentaDto } from 'src/dto/venta.dto';
+import { CreateVentaDto, UpdateVentaDto } from 'src/venta/dto/venta.dto';
 import { UpdateCategoriaDto } from '../categoria/dto/categoria.dto';
 import { EventoEntity } from 'src/evento/entities/evento.entity';
+import { VentaService } from 'src/venta/venta.service';
 @Injectable()
 export class ActividadService {
 
@@ -23,206 +24,45 @@ export class ActividadService {
     private usuarioService: UsuarioService,
     private categoriaService: CategoriaService,
     private dataSource: DataSource,
+    private ventaService: VentaService,
   ) {}
 
-  async create(venta: CrearteVentaDto): Promise<VentasEntity> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const existeUsuario = await this.usuarioService.findByUsername(venta.usuario.username);
-
-      // Crea el cliente si no existe
-      const cliente = await this.clienteService.create(venta.cliente);
-
-      // Crea la categoria si no existe
-      const categoria = await this.categoriaService.create(venta.evento.categoria);
-
-      // Crea el evento si no existe
-      const registroEvento = Object.assign(venta.evento, { categoriaId: categoria._id });
-      const evento = await this.eventoService.createEvento(registroEvento);
-
-      // Buscar si existe un venta con el mismo cliente y evento
-
-      const existeVenta = await this.ventasRepository.findOne({
-        where: { 
-          clienteId: cliente._id,
-          eventoId: evento._id,
-        },
-      });
-
-      if (existeVenta) {
-        throw new HttpException({ message: 'Ya existe una venta con el mismo cliente y evento' }, HttpStatus.CONFLICT);
-      }
-      // console.log('existeVenta', existeVenta);
-
-      // Crea la venta
-      const registroVenta = Object.assign(venta, {
-        clienteId: cliente._id,
-        eventoId: evento._id,
-        usuarioId: existeUsuario._id,
-      });
-
-      const datainto = this.ventasRepository.create(registroVenta);
-      const savedVenta = await queryRunner.manager.save(datainto);
-
-      // Confirma la transacción si todo salió bien
-      await queryRunner.commitTransaction();
-
-      return savedVenta;
-    } catch (error) {
-      // Deshace la transacción si algo falla
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      // Libera el query runner
-      await queryRunner.release();
-    }
+  async createVenta(venta: CreateVentaDto): Promise<any> {
+    return await this.ventaService.create(venta);    
   }
   
-  async findAll() {
-    const ventas = await this.ventasRepository.find();
-    
-    const ventasConDetalles = await Promise.all(ventas.map(async (venta) => {
-      return await this.obtenerVentasById(venta);
-    }));
-    
-    return ventasConDetalles;
+  async findAllVentas() {
+    return await this.ventaService.findAll();
   }
 
-  async findOne(id: string) {
-    const objectId = await stringToObjectid(id);
-    const venta = await this.ventasRepository.findOne({ where: { _id: objectId } });
-    return await this.obtenerVentasById(venta);
+  async findOneVenta(id: string) {
+    return await this.ventaService.findById(id);
   }
 
-  async update(id: string, updateVenta: UpdateVentaDto): Promise<VentasEntity> {
-    // console.log('updateVenta', updateVenta);
-    // console.log('id', id);  
-
-    const objectId = await stringToObjectid(id);
-    const venta = await this.ventasRepository.findOne({ where: { _id: objectId } });
-    console.log('venta', venta);
-
-    if (!venta) {
-      throw new HttpException({ message: 'Venta no encontrada' }, HttpStatus.NOT_FOUND);
-    }
-
-    console.log('updateVentaCliente', updateVenta.cliente);
-    console.log('updateVentaEvento', updateVenta.evento);
-    console.log('updateVentaUsuario', updateVenta.usuario);
-
-    // Actualizamos usuario
-    if(updateVenta.usuario !== undefined){
-      const buscarUsuario = await this.usuarioService.findByUsername(updateVenta.usuario.username);
-      // console.log('buscarUsuario', buscarUsuario);
-      if(buscarUsuario){
-        venta.usuarioId = buscarUsuario._id;
-      }
-    }
- 
-    // Actualizamos cliente
-    //// Si no existe el cliente, se debe crear independientemente antes de  actualizar con ese cliente
-    if(updateVenta.cliente !== undefined){
-      const buscarCliente = await this.clienteService.findOneByName(updateVenta.cliente.nombre);
-      console.log('buscarCliente', buscarCliente);
-      if(buscarCliente){
-        venta.clienteId = buscarCliente._id;
-      }
-    }
-
-    // Actualizamos evento
-    //// Modificaremos el evento existente con los nuevos datos, es decir, no se asignara otro evento, sino que se modificara el existente
-    if(updateVenta.evento !== undefined){
-
-      let obtenerDataEvento = await this.eventoService.findOneById(venta.eventoId.toString());
-      // Solo si la categoria del evento ha cambiado, asignamos la nueva categoria al evento
-      if(updateVenta.evento.categoria !== undefined){
-        const buscarCategoria = await this.categoriaService.findByName(updateVenta.evento.categoria.nombreCategoria);
-        console.log('buscarCategoria', buscarCategoria);  
-        if(!buscarCategoria){
-          throw new HttpException({ message: 'Categoria no encontrada' }, HttpStatus.NOT_FOUND);
-        }
-        
-        // Actualizamos la categoria del evento
-        obtenerDataEvento.categoriaId = buscarCategoria.id;
-      }
-
-      // Actualizamos los datos del evento
-      Object.assign(obtenerDataEvento, updateVenta.evento);
-      venta.eventoId = obtenerDataEvento._id;
-
-      console.log('obtenerDataEvento', obtenerDataEvento);
-      // console.log('venta', venta);
-      
-      await this.eventorepository.save(obtenerDataEvento);
-
-    }
-
-    // Actualizamos el precio
-    if(updateVenta.precio !== undefined){
-      venta.precio = updateVenta.precio;
-    }
-
-    return await this.ventasRepository.save(venta);
+  async findOneVentaDetailed(id: string) {
+    return await this.ventaService.findByIdDetailed(id);
   }
 
-  async remove(id: string): Promise<VentasEntity> {
+  async updateVentasById(id: string, updateVenta: UpdateVentaDto): Promise<any> {
+    return await this.ventaService.updateById(id, updateVenta);
 
-    const objectId = await stringToObjectid(id);
-    const existeVenta = await this.ventasRepository.findOneBy({ _id: objectId });
-    if (!existeVenta) {
-      throw new HttpException('Venta no encontrada', HttpStatus.NOT_FOUND);
-    }
+  //   const objectId = await stringToObjectid(id);
+  //   const existeVenta = await this.ventasRepository.findOneBy({ _id: objectId });
+  //   if (!existeVenta) {
+  //     throw new HttpException('Venta no encontrada', HttpStatus.NOT_FOUND);
+  //   }
 
-    const evento = await this.eventoService.findOneById(existeVenta.eventoId.toString());
-    if (!evento) {
-      throw new HttpException('Evento no encontrado', HttpStatus.NOT_FOUND);
-    }
-    await this.eventoService.removeById(evento);
+  //   const evento = await this.eventoService.findOneById(existeVenta.eventoId.toString());
+  //   if (!evento) {
+  //     throw new HttpException('Evento no encontrado', HttpStatus.NOT_FOUND);
+  //   }
+  //   await this.eventoService.removeById(evento);
 
-    return await this.ventasRepository.remove(existeVenta);
+  //   return await this.ventasRepository.remove(existeVenta);
   }
 
-  private async obtenerVentasById(venta: VentasEntity ): Promise<any>{
-    const cliente = await this.clienteService.findById(venta.clienteId.toString());
-    const evento = await this.eventoService.findOneById(venta.eventoId.toString());
-    const usuario = await this.usuarioService.findById(venta.usuarioId.toString());
-    const categoria = await this.categoriaService.findById(evento.categoriaId.toString());
-
-    // console.log('evento', evento);
-
-    const usuarioData = {
-      _id: usuario._id,
-      name: usuario.name,
-      username: usuario.username,
-    }
-
-    const clienteData = {
-      _id: cliente._id,
-      nombre: cliente.nombre,
-      edad: cliente.edad,
-    }
-
-    const eventoData = {
-      _id: evento._id,
-      nombreEvento: evento.nombreEvento,
-      descripcion: evento.descripcion,
-      fecha: evento.fecha,
-      lugar: evento.lugar,
-      categoria: {
-        _id: categoria._id,
-        nombreCategoria: categoria.nombreCategoria,
-      },
-      precio: venta.precio ?? 0,
-    };
-
-    return {
-      _id: venta._id,
-      usuario: usuarioData,
-      cliente: clienteData,
-      evento: eventoData,
-    };
+  async removeVentasById(id: string): Promise<any> {
+    return await this.ventaService.removeById(id);
   }
+
 }

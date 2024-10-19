@@ -104,7 +104,7 @@ export class VentaService {
     return await this.ventasRepository.find();
   }
 
-  findById(id: string) {
+  async findById(id: string) {
     const existeVenta = this.ventasRepository.findOne({
       where: { 
         id: id,
@@ -145,6 +145,11 @@ export class VentaService {
       throw new HttpException({ message: `La venta con id ${id} no existe` }, 404);
     }
 
+    // fecha de venta
+    if( updateVentaDto.fechaVenta > new Date() ){
+      throw new HttpException({ message: 'La fecha de venta no puede ser mayor a la fecha actual' }, 400);
+    }
+
     const ventaUpdate = Object.assign(existeVenta, updateVentaDto);
     return await this.ventasRepository.save(ventaUpdate);
   }
@@ -173,7 +178,7 @@ export class VentaService {
     const cliente = await this.clienteService.findById(venta.clienteId);
     // console.log('cliente', cliente);
     const evento = await this.eventoService.findByIdDetailed(venta.eventoId);
-    console.log('evento', evento);
+    // console.log('evento', evento);
 
     const usuarioData = {
       id: usuario.id,
